@@ -3,7 +3,8 @@
 #include <string.h>
 #include <map>
 #include <iostream>
-#include <stdlib.h>
+#include <cstdlib>
+#include <ctime>
 #include "user.h"
 #include "file.h"
 #define FUHAO "*"
@@ -15,5 +16,6 @@ public:
 	int mode = 0;
 	bool fresh_mode = true;
 	int wait;
-
+	std::string id;
+	std::string oid;
 };

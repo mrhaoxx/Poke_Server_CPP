@@ -59,6 +59,22 @@ std::string distribute::input(std::string input)
 		{
 			mode = 10;
 		}
+		if (data[0] == "needhelpadndgetid")
+		{
+			mode = 11;
+		}
+		if (data[0] == "needhelpcheckothershelpyou")
+		{
+			mode = 12;
+		}
+		if (data[0] == "helpcommandchannel")
+		{
+			mode = 13;
+		}
+		if (data[0] == "helpothersrequestid")
+		{
+			mode = 14;
+		}
 	}
 	switch (mode)
 	{
@@ -190,11 +206,11 @@ std::string distribute::input(std::string input)
 	case 7:
 		if (data.size() == 1)
 		{
-			if (read("../musiclist") == "")
+			if (read("musiclists/musiclist") == "")
 			{
 				return "empty";
 			}
-			return read("../musiclist");
+			return read("musiclists/musiclist");
 		}
 		else
 		{
@@ -218,13 +234,13 @@ std::string distribute::input(std::string input)
 	case 9:
 		if (data.size() == 2)
 		{
-			if (read("../musiclist")=="")
+			if (read("musiclists/musiclist")=="")
 			{
-				write("../musiclist", data[1]);
+				write("musiclists/musiclist", data[1]);
 			}
 			else
 			{
-				write("../musiclist", read("../musiclist")+"$" + data[1]);
+				write("musiclists/musiclist", read("musiclists/musiclist")+"$" + data[1]);
 			}
 			return "ok";
 		}
@@ -235,8 +251,46 @@ std::string distribute::input(std::string input)
 	case 10:
 		if (data.size() == 1)
 		{
-			write("../musiclist", "");
+			write("musiclists/musiclist", "");
 			return "ok";
+		}
+		else
+		{
+			return "SIZEERROR";
+		}
+	case 11:
+		if (data.size() == 1)
+		{
+			id = randstring();
+			write("help/" + id, "wait");
+			return id;
+		}
+		else
+		{
+			return "SIZEERROR";
+		}
+	case 12:
+		if (data.size() == 1)
+		{			
+			return read("help/" + id);
+		}			
+		else
+		{
+			return "SIZEERROR";
+		}
+	case 14:
+		if (data.size() == 2)
+		{
+			if (read("help/" + data[1]) == "wait")
+			{
+				write("help/" + data[1], "requested");
+				oid = data[1];
+				return "ok";
+			}
+			else
+			{
+				return "wrong";
+			}
 		}
 		else
 		{

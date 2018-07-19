@@ -53,6 +53,8 @@ void client(int client_sockfd,sockaddr_in client_sockaddr) {
 int main()
 {
 	system("mkdir data");
+	system("mkdir data/help");
+	system("mkdir data/musiclists");
 	std::cout << "[SERVER] Starting"<< std::endl;
 	int server_sockfd, client_sockfd;
 	socklen_t server_len, client_len;
