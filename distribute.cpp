@@ -67,13 +67,25 @@ std::string distribute::input(std::string input)
 		{
 			mode = 12;
 		}
-		if (data[0] == "helpcommandchannel")
+		if (data[0] == "helpcommandchannelrecv")
 		{
 			mode = 13;
 		}
 		if (data[0] == "helpothersrequestid")
 		{
 			mode = 14;
+		}
+		if (data[0] == "helpcommandchannelsend")
+		{
+			mode = 15;
+		}
+		if (data[0] == "helpotherscommandchannelrecv")
+		{
+			mode = 16;
+		}
+		if (data[0] == "helpotherscommandchannelsend")
+		{
+			mode = 17;
 		}
 	}
 	switch (mode)
@@ -278,6 +290,24 @@ std::string distribute::input(std::string input)
 		{
 			return "SIZEERROR";
 		}
+	case 13:
+		if (data.size() == 1)
+		{
+			std::string tmp = read("help/" + id + ".command");
+			if (tmp=="")
+			{
+				return "wait";
+			}
+			else
+			{
+				write("help/" + id + ".command","");
+				return tmp;
+			}
+		}
+		else
+		{
+			return "SIZEERROR";
+		}
 	case 14:
 		if (data.size() == 2)
 		{
@@ -291,6 +321,16 @@ std::string distribute::input(std::string input)
 			{
 				return "wrong";
 			}
+		}
+		else
+		{
+			return "SIZEERROR";
+		}
+	case 17:
+		if (data.size() == 2)
+		{
+			write("help/" + oid + ".command", data[1]);
+			return "ok";
 		}
 		else
 		{
