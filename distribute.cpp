@@ -67,25 +67,41 @@ std::string distribute::input(std::string input)
 		{
 			mode = 12;
 		}
-		if (data[0] == "helpcommandchannelrecv")
-		{
-			mode = 13;
-		}
 		if (data[0] == "helpothersrequestid")
 		{
 			mode = 14;
 		}
-		if (data[0] == "helpcommandchannelsend")
-		{
-			mode = 15;
+		//ReCougreTo20
+		if (data[0] == "needhelpstarted") {
+			mode = 20;
 		}
-		if (data[0] == "helpotherscommandchannelrecv")
+		if (data[0] == "helpothersisstarted")
 		{
-			mode = 16;
+			mode = 21;
 		}
-		if (data[0] == "helpotherscommandchannelsend")
+		if (data[0] == "needhelpsend")
 		{
-			mode = 17;
+			mode = 22;
+		}
+		if (data[0] == "helpothersrecv")
+		{
+			mode = 23;
+		}
+		if (data[0] == "needhelpfinished")
+		{
+			mode = 24;
+		}
+		if (data[0] == "helpothersisfinished")
+		{
+			mode = 25;
+		}
+		if (data[0] == "helpotherssend")
+		{
+			mode = 26;
+		}
+		if (data[0] == "needhelprecv")
+		{
+			mode = 27;
 		}
 	}
 	switch (mode)
@@ -331,6 +347,155 @@ std::string distribute::input(std::string input)
 		{
 			write("help/" + oid + ".command", data[1]);
 			return "ok";
+		}
+		else
+		{
+			return "SIZEERROR";
+		}
+	case 20:
+		if (data.size() == 1)
+		{
+			write("help/"+id + ".started", "started");
+		}
+		else
+		{
+			return "SIZEERROR";
+		}
+	case 21:
+		if (data.size() == 1)
+		{
+			if (read("help/" + oid + ".started") == "started")
+			{
+				return "started";
+			}
+			else
+			{
+				return FUHAO;
+			}
+		}
+		else
+		{
+			return "SIZEERROR";
+		}
+	case 22:
+		if (data.size() >= 2)
+		{
+			std::string tmp;
+			int size = (int)data.size() - 1;
+			if (size == 1)
+			{
+				writenochear("help/" + id + ".reply", data[1]);
+				return "ok";
+			}
+			for (int x = 1; x < size; x++)
+			{
+				tmp = tmp + FUHAO + data[x];
+			}
+			writenochear("help/"+id+".reply",tmp);
+			//write("chat/chat_num", std::to_string(atoi(read("chat/chat_num").c_str())+1));
+			return "ok";
+		}
+		else
+		{
+			return "SIZEERROR";
+		}
+	case 23:
+		if (data.size() == 2)
+		{
+			//return "233";
+			std::string linetmp, tmp;
+			std::vector<std::string> t;
+			int fromstart = atoi(data[1].c_str());
+			SplitString(read("help/"+oid+".reply"), t, "|");
+			//while (t[line])
+			if (atoi(data[1].c_str()) > (int)t.size())
+			{
+				return "SIZEERROR";
+			}
+			else
+			{
+				while (fromstart < t.size())
+				{
+					fromstart++;
+					tmp = tmp + "$" + t[fromstart - 1];
+				}
+			}
+			return std::to_string(t.size()) + tmp;
+		}
+		else
+		{
+			return "SIZEERROR";
+		}
+	case 24:
+		if (data.size() == 1)
+		{
+			write("help/" + id + ".finished", "finished");
+			return "ok";
+		}
+		else
+		{
+			return "SIZEERROR";
+		}
+	case 25:
+		if (data.size() == 1)
+		{
+			if (read("help/" + oid + ".finished") == "finished")
+			{
+				return "finished";
+			}
+			else
+			{
+				return FUHAO;
+			}
+		}
+		else
+		{
+			return "SIZEERROR";
+		}
+	case 26:
+		if (data.size() >= 2)
+		{
+			std::string tmp;
+			int size = (int)data.size() - 1;
+			if (size == 1)
+			{
+				writenochear("help/" + oid + ".command", data[1]);
+				return "ok";
+			}
+			for (int x = 1; x < size; x++)
+			{
+				tmp = tmp + FUHAO + data[x];
+			}
+			writenochear("help/" + id + ".command", tmp);
+			//write("chat/chat_num", std::to_string(atoi(read("chat/chat_num").c_str())+1));
+			return "ok";
+		}
+		else
+		{
+			return "SIZEERROR";
+		}
+	case 27:
+		if (data.size() == 2)
+		{
+			//return "233";
+			std::string linetmp, tmp;
+			std::vector<std::string> t;
+			int fromstart = atoi(data[1].c_str());
+			SplitString(read("help/" + id + ".command"), t, "|");
+			//while (t[line])
+			if (atoi(data[1].c_str()) > (int)t.size())
+			{
+				return "SIZEERROR";
+			}
+			else
+			{
+				while (fromstart < t.size())
+				{
+					fromstart++;
+					tmp = tmp + "$" + t[fromstart - 1];
+				}
+			}
+			return std::to_string(t.size()) + tmp;
 		}
 		else
 		{
